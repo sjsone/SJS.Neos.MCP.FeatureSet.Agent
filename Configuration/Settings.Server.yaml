@@ -1,0 +1,9 @@
+SJS:
+  Flow:
+    MCP:
+      server:
+        mcp:
+          featureSets:
+            knowledge: \SJS\Neos\MCP\FeatureSet\Agent\KnowledgeFeatureSet
+            analysis: \SJS\Neos\MCP\FeatureSet\Agent\AnalysisFeatureSet
+            scenario: \SJS\Neos\MCP\FeatureSet\Agent\ScenarioFeatureSet

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "create-blog-post",
+    "title": "Create a Blog Post",
+    "description": "Create a new blog posting document with content from a URL or description"
+  },
+  {
+    "name": "audit-and-fix-seo",
+    "title": "Audit & Fix SEO",
+    "description": "Find pages with missing metadata and fix them using update_content"
+  },
+  {
+    "name": "create-landing-page",
+    "title": "Create a Landing Page",
+    "description": "Create a landing page with hero section, features, and CTA"
+  }
+]

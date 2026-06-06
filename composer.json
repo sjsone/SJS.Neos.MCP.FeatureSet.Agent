@@ -1,0 +1,22 @@
+{
+    "name": "sjs/neos-mcp-feature-set-agent",
+    "type": "neos-package",
+    "description": "SJS.Neos.MCP Feature Set for AI Agent orientation and analysis",
+    "license": "AGPL-3.0-or-later",
+    "require": {
+        "neos/neos": "^9.0",
+        "sjs/flow-mcp": "*",
+        "sjs/neos-mcp": "*",
+        "sjs/neos-mcp-feature-set-cr": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "SJS\\Neos\\MCP\\FeatureSet\\Agent\\": "Classes"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SJS\\Neos\\MCP\\FeatureSet\\Agent\\Tests\\": "Tests"
+        }
+    }
+}
