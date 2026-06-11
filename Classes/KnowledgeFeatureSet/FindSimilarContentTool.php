@@ -22,21 +22,23 @@ use SJS\Flow\MCP\Domain\MCP\Tool\Content;
 use SJS\Flow\MCP\JsonSchema\IntegerSchema;
 use SJS\Flow\MCP\JsonSchema\ObjectSchema;
 use SJS\Flow\MCP\JsonSchema\StringSchema;
+use SJS\Flow\MCP\Domain\MCP\ToolConstructor;
+use SJS\Flow\MCP\FeatureSet\FeatureSetInterface;
 use SJS\Neos\MCP\FeatureSet\CR\Trait\ContentRepositoryTool;
 
-class FindSimilarContentTool extends Tool
+class FindSimilarContentTool extends Tool implements ToolConstructor
 {
     use ContentRepositoryTool;
 
     private const DEFAULT_LIMIT = 20;
 
-    public function __construct()
+    public function __construct(FeatureSetInterface $featureSet)
     {
         parent::__construct(
             name: 'find_similar_content',
             description: 'Find existing content nodes by NodeType name. '
-                . 'Useful for discovering examples and patterns already in use on the site. '
-                . 'For background on NodeTypes, use get_context(\'node-types\').',
+            . 'Useful for discovering examples and patterns already in use on the site. '
+            . 'For background on NodeTypes, use get_context(\'node-types\').',
             inputSchema: new ObjectSchema(properties: [
                 'nodeType' => (new StringSchema(
                     description: 'NodeType name to search for, e.g. "Neos.Demo:Content.Hero"'
@@ -49,7 +51,8 @@ class FindSimilarContentTool extends Tool
             annotations: new Annotations(
                 title: 'Find Similar Content',
                 readOnlyHint: true
-            )
+            ),
+            featureSet: $featureSet
         );
     }
 
@@ -72,12 +75,12 @@ class FindSimilarContentTool extends Tool
         );
 
         foreach ($rootAggregates as $rootAggregate) {
-            if (count($results) >= $limit) {
+            if (\count($results) >= $limit) {
                 break;
             }
 
             foreach ($rootAggregate->occupiedDimensionSpacePoints as $originDsp) {
-                if (count($results) >= $limit) {
+                if (\count($results) >= $limit) {
                     break;
                 }
 
@@ -112,7 +115,7 @@ class FindSimilarContentTool extends Tool
         NodeTypeName $targetType,
         \Neos\ContentRepository\Core\NodeType\NodeTypeManager $nodeTypeManager
     ): void {
-        if (count($results) >= $limit) {
+        if (\count($results) >= $limit) {
             return;
         }
 
@@ -130,7 +133,7 @@ class FindSimilarContentTool extends Tool
         }
 
         foreach ($subtree->children as $child) {
-            if (count($results) >= $limit) {
+            if (\count($results) >= $limit) {
                 break;
             }
             $this->collectNodes($child, $results, $limit, $targetType, $nodeTypeManager);
@@ -141,7 +144,7 @@ class FindSimilarContentTool extends Tool
     {
         foreach (['title', 'headline', 'header', 'text'] as $candidate) {
             $value = $node->getProperty($candidate);
-            if (is_string($value) && $value !== '') {
+            if (\is_string($value) && $value !== '') {
                 return $value;
             }
         }
@@ -158,9 +161,9 @@ class FindSimilarContentTool extends Tool
             if ($key[0] === '_') {
                 continue; // skip internal properties
             }
-            if (is_string($value) && strlen($value) > 100) {
-                $summary[$key] = substr($value, 0, 100) . '...';
-            } elseif (!is_object($value) && $value !== null) {
+            if (\is_string($value) && \strlen($value) > 100) {
+                $summary[$key] = \substr($value, 0, 100) . '...';
+            } elseif (!\is_object($value) && $value !== null) {
                 $summary[$key] = $value;
             }
         }

@@ -8,14 +8,18 @@ use SJS\Flow\MCP\Domain\Connection\ServerContext;
 use SJS\Flow\MCP\Domain\MCP\Tool;
 use SJS\Flow\MCP\Domain\MCP\Tool\Annotations;
 use SJS\Flow\MCP\Domain\MCP\Tool\Content;
+use SJS\Flow\MCP\Domain\MCP\ToolConstructor;
+use SJS\Flow\MCP\FeatureSet\FeatureSetInterface;
 use SJS\Flow\MCP\JsonSchema\ObjectSchema;
-use SJS\Neos\MCP\FeatureSet\Agent\Trait\KnowledgeResourceTrait;
 
-class ListScenariosTool extends Tool
+class ListScenariosTool extends Tool implements ToolConstructor
 {
-    use KnowledgeResourceTrait;
+    /**
+     * @var array<string, array{file: string, title: string, description: string}>
+     */
+    private array $catalog = [];
 
-    public function __construct()
+    public function __construct(FeatureSetInterface $featureSet)
     {
         parent::__construct(
             name: 'list_scenarios',
@@ -26,8 +30,17 @@ class ListScenariosTool extends Tool
             annotations: new Annotations(
                 title: 'List Scenarios',
                 readOnlyHint: true
-            )
+            ),
+            featureSet: $featureSet
         );
+    }
+
+    /**
+     * @param array<string, array{file: string, title: string, description: string}> $catalog
+     */
+    public function setCatalog(array $catalog): void
+    {
+        $this->catalog = $catalog;
     }
 
     /**
@@ -35,13 +48,17 @@ class ListScenariosTool extends Tool
      */
     public function run(ServerContext $serverContext, array $input): Content
     {
-        $indexJson = $this->loadMarkdownFromDirectory('Scenarios', 'index.json');
-        $catalog = json_decode($indexJson, true);
-        if (!is_array($catalog)) {
-            throw new \RuntimeException('Failed to parse scenario index.json');
+        $scenarios = [];
+        foreach ($this->catalog as $name => $entry) {
+            $scenarios[] = [
+                'name' => $name,
+                'title' => $entry['title'] ?? $name,
+                'description' => $entry['description'] ?? '',
+            ];
         }
+
         return Content::structuredWithFallback([
-            'scenarios' => $catalog,
+            'scenarios' => $scenarios,
         ]);
     }
 }

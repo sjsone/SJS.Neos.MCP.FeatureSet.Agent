@@ -15,17 +15,19 @@ use Neos\ContentRepository\Core\SharedModel\Node\NodeAddress;
 use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use SJS\Flow\MCP\Domain\Connection\ServerContext;
 use SJS\Flow\MCP\Domain\MCP\Tool;
+use SJS\Flow\MCP\Domain\MCP\ToolConstructor;
 use SJS\Flow\MCP\Domain\MCP\Tool\Annotations;
 use SJS\Flow\MCP\Domain\MCP\Tool\Content;
+use SJS\Flow\MCP\FeatureSet\FeatureSetInterface;
 use SJS\Flow\MCP\JsonSchema\ObjectSchema;
 use SJS\Flow\MCP\JsonSchema\StringSchema;
 use SJS\Neos\MCP\FeatureSet\CR\Trait\ContentRepositoryTool;
 
-class AuditSEOTool extends Tool
+class AuditSEOTool extends Tool implements ToolConstructor
 {
     use ContentRepositoryTool;
 
-    public function __construct()
+    public function __construct(FeatureSetInterface $featureSet)
     {
         parent::__construct(
             name: 'audit_seo',
@@ -42,7 +44,8 @@ class AuditSEOTool extends Tool
             annotations: new Annotations(
                 title: 'Audit SEO',
                 readOnlyHint: true
-            )
+            ),
+            featureSet: $featureSet
         );
     }
 
@@ -81,7 +84,7 @@ class AuditSEOTool extends Tool
         }
 
         return Content::structuredWithFallback([
-            'totalIssues' => count($issues),
+            'totalIssues' => \count($issues),
             'issues' => $issues,
         ]);
     }
@@ -98,17 +101,17 @@ class AuditSEOTool extends Tool
         $pageIssues = [];
 
         $title = $node->getProperty('title');
-        if ($title === null || (is_string($title) && trim($title) === '')) {
+        if ($title === null || (\is_string($title) && \trim($title) === '')) {
             $pageIssues[] = 'missing title';
         }
 
         $metaDescription = $node->getProperty('metaDescription');
-        if ($metaDescription === null || (is_string($metaDescription) && trim($metaDescription) === '')) {
+        if ($metaDescription === null || (\is_string($metaDescription) && \trim($metaDescription) === '')) {
             $pageIssues[] = 'missing metaDescription';
         }
 
         $urlPathSegment = $node->getProperty('uriPathSegment');
-        if ($urlPathSegment === null || (is_string($urlPathSegment) && trim($urlPathSegment) === '')) {
+        if ($urlPathSegment === null || (\is_string($urlPathSegment) && \trim($urlPathSegment) === '')) {
             $pageIssues[] = 'missing uriPathSegment';
         }
 

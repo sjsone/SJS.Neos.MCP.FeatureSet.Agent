@@ -4,6 +4,32 @@ SJS:
       server:
         mcp:
           featureSets:
-            knowledge: \SJS\Neos\MCP\FeatureSet\Agent\KnowledgeFeatureSet
-            analysis: \SJS\Neos\MCP\FeatureSet\Agent\AnalysisFeatureSet
-            scenario: \SJS\Neos\MCP\FeatureSet\Agent\ScenarioFeatureSet
+            knowledge:
+              implementation: '\SJS\Neos\MCP\FeatureSet\Agent\KnowledgeFeatureSet'
+              options:
+                files:
+                  escr: 'resource://SJS.Neos.MCP.FeatureSet.Agent/Private/Knowledge/escr.md'
+                  node-types: 'resource://SJS.Neos.MCP.FeatureSet.Agent/Private/Knowledge/node-types.md'
+                  document-vs-content: 'resource://SJS.Neos.MCP.FeatureSet.Agent/Private/Knowledge/document-vs-content.md'
+                  dimensions: 'resource://SJS.Neos.MCP.FeatureSet.Agent/Private/Knowledge/dimensions.md'
+                  workspaces: 'resource://SJS.Neos.MCP.FeatureSet.Agent/Private/Knowledge/workspaces.md'
+                  constraints: 'resource://SJS.Neos.MCP.FeatureSet.Agent/Private/Knowledge/constraints.md'
+
+            analysis: '\SJS\Neos\MCP\FeatureSet\Agent\AnalysisFeatureSet'
+
+            scenario:
+              implementation: '\SJS\Neos\MCP\FeatureSet\Agent\ScenarioFeatureSet'
+              options:
+                scenarios:
+                  create-blog-post:
+                    file: 'resource://SJS.Neos.MCP.FeatureSet.Agent/Private/Scenarios/create-blog-post.md'
+                    title: 'Create a Blog Post'
+                    description: 'Create a new blog posting document with content from a URL or description'
+                  audit-and-fix-seo:
+                    file: 'resource://SJS.Neos.MCP.FeatureSet.Agent/Private/Scenarios/audit-and-fix-seo.md'
+                    title: 'Audit & Fix SEO'
+                    description: 'Find pages with missing metadata and fix them using update_content'
+                  create-landing-page:
+                    file: 'resource://SJS.Neos.MCP.FeatureSet.Agent/Private/Scenarios/create-landing-page.md'
+                    title: 'Create a Landing Page'
+                    description: 'Create a landing page with hero section, features, and CTA'

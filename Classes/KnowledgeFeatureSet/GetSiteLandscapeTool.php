@@ -14,20 +14,23 @@ use SJS\Flow\MCP\Domain\Connection\ServerContext;
 use SJS\Flow\MCP\Domain\MCP\Tool;
 use SJS\Flow\MCP\Domain\MCP\Tool\Annotations;
 use SJS\Flow\MCP\Domain\MCP\Tool\Content;
+use SJS\Flow\MCP\Domain\MCP\ToolConstructor;
+use SJS\Flow\MCP\FeatureSet\FeatureSetInterface;
 use SJS\Flow\MCP\JsonSchema\IntegerSchema;
 use SJS\Flow\MCP\JsonSchema\ObjectSchema;
 use SJS\Flow\MCP\JsonSchema\StringSchema;
 use SJS\Neos\MCP\FeatureSet\CR\Trait\ContentRepositoryTool;
 
-class GetSiteLandscapeTool extends Tool
+class GetSiteLandscapeTool extends Tool implements ToolConstructor
 {
     use ContentRepositoryTool;
 
     private const DEFAULT_MAX_CHILDREN = 30;
 
-    public function __construct()
+    public function __construct(FeatureSetInterface $featureSet)
     {
         parent::__construct(
+            featureSet: $featureSet,
             name: 'get_site_landscape',
             description: 'Returns a compact overview of the document (page) tree. '
                 . 'Shows pages with their NodeType and properties that differ from '
@@ -74,7 +77,7 @@ class GetSiteLandscapeTool extends Tool
         $parentMap = [];
 
         // Collect all document aggregates and their nodes
-        $allTypes = array_merge([$documentTypeName], array_map(fn($nt) => $nt->name, $subNodeTypes));
+        $allTypes = \array_merge([$documentTypeName], \array_map(fn($nt) => $nt->name, $subNodeTypes));
         foreach ($allTypes as $typeName) {
             $aggregates = $graph->findNodeAggregatesByType($typeName);
             foreach ($aggregates as $aggregate) {
@@ -185,7 +188,7 @@ class GetSiteLandscapeTool extends Tool
         }
 
         $entry['children'] = $childEntries;
-        if ($count >= $maxChildren && count($childIds) > $maxChildren) {
+        if ($count >= $maxChildren && \count($childIds) > $maxChildren) {
             $entry['childrenTruncated'] = true;
         }
 

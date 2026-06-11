@@ -11,17 +11,19 @@ use Neos\ContentRepository\Core\SharedModel\Node\NodeAddress;
 use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use SJS\Flow\MCP\Domain\Connection\ServerContext;
 use SJS\Flow\MCP\Domain\MCP\Tool;
+use SJS\Flow\MCP\Domain\MCP\ToolConstructor;
 use SJS\Flow\MCP\Domain\MCP\Tool\Annotations;
+use SJS\Flow\MCP\FeatureSet\FeatureSetInterface;
 use SJS\Flow\MCP\Domain\MCP\Tool\Content;
 use SJS\Flow\MCP\JsonSchema\ObjectSchema;
 use SJS\Flow\MCP\JsonSchema\StringSchema;
 use SJS\Neos\MCP\FeatureSet\CR\Trait\ContentRepositoryTool;
 
-class GetAvailableChildrenTool extends Tool
+class GetAvailableChildrenTool extends Tool implements ToolConstructor
 {
     use ContentRepositoryTool;
 
-    public function __construct()
+    public function __construct(FeatureSetInterface $featureSet)
     {
         parent::__construct(
             name: 'get_available_children',
@@ -43,7 +45,8 @@ class GetAvailableChildrenTool extends Tool
             annotations: new Annotations(
                 title: 'Get Available Children',
                 readOnlyHint: true
-            )
+            ),
+            featureSet: $featureSet
         );
     }
 
@@ -102,7 +105,7 @@ class GetAvailableChildrenTool extends Tool
         );
         foreach ($childNodes as $childNode) {
             $typeName = (string) $childNode->nodeTypeName;
-            if (!in_array($typeName, $existingChildTypes, true)) {
+            if (!\in_array($typeName, $existingChildTypes, true)) {
                 $existingChildTypes[] = $typeName;
             }
         }
@@ -110,7 +113,7 @@ class GetAvailableChildrenTool extends Tool
         return Content::structuredWithFallback([
             'nodeAggregateId' => (string) $parentNode->aggregateId,
             'nodeTypeName' => (string) $parentNode->nodeTypeName,
-            'allowedNodeTypes' => array_values(array_unique($allowedTypes)),
+            'allowedNodeTypes' => \array_values(\array_unique($allowedTypes)),
             'existingChildTypes' => $existingChildTypes,
         ]);
     }

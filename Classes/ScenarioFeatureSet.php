@@ -14,7 +14,14 @@ class ScenarioFeatureSet extends AbstractFeatureSet
 {
     public function initialize(): void
     {
-        $this->addTool(ListScenariosTool::class);
-        $this->addTool(GetScenarioTool::class);
+        $listTool = $this->addTool(ListScenariosTool::class);
+        $getTool = $this->addTool(GetScenarioTool::class);
+
+        // Configure scenario tools with catalog from options
+        $scenarios = $this->options['scenarios'] ?? [];
+        if (\is_array($scenarios) && \count($scenarios) > 0) {
+            $listTool->setCatalog($scenarios);
+            $getTool->setCatalog($scenarios);
+        }
     }
 }

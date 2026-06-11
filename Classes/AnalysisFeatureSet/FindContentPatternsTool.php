@@ -17,15 +17,17 @@ use SJS\Flow\MCP\Domain\Connection\ServerContext;
 use SJS\Flow\MCP\Domain\MCP\Tool;
 use SJS\Flow\MCP\Domain\MCP\Tool\Annotations;
 use SJS\Flow\MCP\Domain\MCP\Tool\Content;
+use SJS\Flow\MCP\Domain\MCP\ToolConstructor;
+use SJS\Flow\MCP\FeatureSet\FeatureSetInterface;
 use SJS\Flow\MCP\JsonSchema\ObjectSchema;
 use SJS\Flow\MCP\JsonSchema\StringSchema;
 use SJS\Neos\MCP\FeatureSet\CR\Trait\ContentRepositoryTool;
 
-class FindContentPatternsTool extends Tool
+class FindContentPatternsTool extends Tool implements ToolConstructor
 {
     use ContentRepositoryTool;
 
-    public function __construct()
+    public function __construct(FeatureSetInterface $featureSet)
     {
         parent::__construct(
             name: 'find_content_patterns',
@@ -41,7 +43,8 @@ class FindContentPatternsTool extends Tool
             annotations: new Annotations(
                 title: 'Find Content Patterns',
                 readOnlyHint: true
-            )
+            ),
+            featureSet: $featureSet
         );
     }
 
@@ -133,9 +136,9 @@ class FindContentPatternsTool extends Tool
                 if (!isset($propertyValues[$propName])) {
                     $propertyValues[$propName] = [];
                 }
-                $stringValue = is_string($propValue) ? $propValue : json_encode($propValue);
-                if (is_string($propValue) && strlen($propValue) > 80) {
-                    $stringValue = substr($propValue, 0, 80) . '...';
+                $stringValue = \is_string($propValue) ? $propValue : \json_encode($propValue);
+                if (\is_string($propValue) && \strlen($propValue) > 80) {
+                    $stringValue = \substr($propValue, 0, 80) . '...';
                 }
                 if (!isset($propertyValues[$propName][$stringValue])) {
                     $propertyValues[$propName][$stringValue] = 0;
